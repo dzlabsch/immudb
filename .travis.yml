@@ -4,10 +4,6 @@ services:
 env:
   global:
     - IMAGE_NAME=codenotarydemo/immudb
-    - REGISTRY_USER=codenotarydemo
-    # REGISTRY_PASS=...
-    - secret: "<something long>"
-
 before_script:
   - version="$(awk '$2 == "CAKE_SERVICE_VERSION" { print $3; exit }' Dockerfile)"
   - docker pull "$IMAGE_NAME" || true
