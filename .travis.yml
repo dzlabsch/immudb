@@ -7,7 +7,7 @@ env:
     - DOCKER_IMAGE=codenotarydemo/immudb
 
 before_script:
-  - apk add --no-cache curl
+  - apt update && apt install curl -y
   - curl -L -o /tmp/vcn https://github.com/vchain-us/vcn/releases/download/v0.8.3/vcn-v0.8.3-linux-amd64-static
   - CHECKSUM=$(sha256sum /tmp/vcn | cut -d " " -f 1)
   - echo $CHECKSUM
