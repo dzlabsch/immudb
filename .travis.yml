@@ -4,7 +4,7 @@ services:
   - docker
 env:
   global:
-    - DOCKER_IMAGE=codenotarydemo/demowebserver
+    - DOCKER_IMAGE=codenotarydemo/immudb
 
 before_script:
   - version="$(awk '$2 == "CAKE_SERVICE_VERSION" { print $3; exit }' Dockerfile)"
