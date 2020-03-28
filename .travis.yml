@@ -2,24 +2,27 @@ sudo: required
 
 services:
   - docker
+env:
+  global:
+    - DOCKER_IMAGE=codenotarydemo/demowebserver
 
 before_script:
   - version="$(awk '$2 == "CAKE_SERVICE_VERSION" { print $3; exit }' Dockerfile)"
-  - docker pull "$IMAGE_REPO/$IMAGE_NAME" || true
+  - docker pull "$DOCKER_IMAGE" || true
 
 script:
-  - docker build --pull --cache-from "$IMAGE_REPO/$IMAGE_NAME" --tag "$IMAGE_REPO/$IMAGE_NAME" .
+  - docker build --pull --cache-from "$DOCKER_IMAGE" --tag "$DOCKER_IMAGE" .
 
 after_script:
   - docker images
 
 before_deploy:
   - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
-  - docker tag "$IMAGE_REPO/$IMAGE_NAME" "${IMAGE_REPO}/${IMAGE_NAME}:latest"
-  - docker tag "$IMAGE_REPO/$IMAGE_NAME" "${IMAGE_REPO}/${IMAGE_NAME}:${version}"
+  - docker tag "$DOCKER_IMAGE" "${DOCKER_IMAGE}:latest"
+  - docker tag "$DOCKER_IMAGE" "${DOCKER_IMAGE}:${version}"
 
 deploy:
   provider: script
-  script: docker push "${IMAGE_REPO}/${IMAGE_NAME}:latest" && docker push "${IMAGE_REPO}/${IMAGE_NAME}:${version}"
+  script: docker push "${DOCKER_IMAGE}:latest" && docker push "${DOCKER_IMAGE}:${version}"
   on:
     branch: master
