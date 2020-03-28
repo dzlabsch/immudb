@@ -5,21 +5,21 @@ services:
 
 before_script:
   - version="$(awk '$2 == "CAKE_SERVICE_VERSION" { print $3; exit }' Dockerfile)"
-  - docker pull "$IMAGE_NAME" || true
+  - docker pull "$IMAGE_REPO/$IMAGE_NAME" || true
 
 script:
-  - docker build --pull --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME" .
+  - docker build --pull --cache-from "$IMAGE_REPO/$IMAGE_NAME" --tag "$IMAGE_REPO/$IMAGE_NAME" .
 
 after_script:
   - docker images
 
 before_deploy:
   - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
-  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
-  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${version}"
+  - docker tag "$IMAGE_REPO/$IMAGE_NAME" "${IMAGE_REPO}/${IMAGE_NAME}:latest"
+  - docker tag "$IMAGE_REPO/$IMAGE_NAME" "${IMAGE_REPO}/${IMAGE_NAME}:${version}"
 
 deploy:
   provider: script
-  script: docker push "${IMAGE_NAME}:latest" && docker push "${IMAGE_NAME}:${version}"
+  script: docker push "${IMAGE_REPO}/${IMAGE_NAME}:latest" && docker push "${IMAGE_REPO}/${IMAGE_NAME}:${version}"
   on:
     branch: master
