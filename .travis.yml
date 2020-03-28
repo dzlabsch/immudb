@@ -7,8 +7,6 @@ env:
     - DOCKER_IMAGE=codenotarydemo/immudb
 
 before_script:
-  - version="$(awk '$2 == "CAKE_SERVICE_VERSION" { print $3; exit }' Dockerfile)"
-  - echo $version
   - docker pull "$DOCKER_IMAGE" || true
 
 script:
@@ -20,10 +18,10 @@ after_script:
 before_deploy:
   - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
   - docker tag "$DOCKER_IMAGE" "${DOCKER_IMAGE}:latest"
-  - docker tag "$DOCKER_IMAGE" "${DOCKER_IMAGE}:${version}"
+  - docker tag "$DOCKER_IMAGE" "${DOCKER_IMAGE}:${TRAVIS_BUILD_NUMBER}"
 
 deploy:
   provider: script
-  script: docker push "${DOCKER_IMAGE}:latest" && docker push "${DOCKER_IMAGE}:${version}"
+  script: docker push "${DOCKER_IMAGE}:latest" && docker push "${DOCKER_IMAGE}:${TRAVIS_BUILD_NUMBER}"
   on:
     branch: master
