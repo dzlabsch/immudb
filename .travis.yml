@@ -8,7 +8,8 @@ env:
 
 before_script:
   - sudo apt update && sudo apt install curl -y
-  - curl -L -o /tmp/vcn https://github.com/vchain-us/vcn/releases/download/v0.8.3/vcn-v0.8.3-linux-amd64-static
+#  - curl -L -o /tmp/vcn https://github.com/vchain-us/vcn/releases/download/v0.8.3/vcn-v0.8.3-linux-amd64-static
+  - curl -L -o /tmp/snyk https://github.com/snyk/snyk/releases/download/v1.305.0/snyk-linux
   - CHECKSUM=$(sha256sum /tmp/vcn | cut -d " " -f 1)
   - echo $CHECKSUM
   - curl -s https://api.codenotary.io/authenticate/$CHECKSUM?org=vchain.us | grep -q :0
