@@ -8,6 +8,7 @@ env:
 
 before_script:
   - version="$(awk '$2 == "CAKE_SERVICE_VERSION" { print $3; exit }' Dockerfile)"
+  - echo $version
   - docker pull "$DOCKER_IMAGE" || true
 
 script:
