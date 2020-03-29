@@ -7,7 +7,7 @@ env:
     - DOCKER_IMAGE=codenotarydemo/immudb
 
 before_script:
-  - sudo apt update && sudo apt install curl -y
+  - sudo apt update && sudo apt install curl rpm -y
 #  - curl -L -o /tmp/vcn https://github.com/vchain-us/vcn/releases/download/v0.8.3/vcn-v0.8.3-linux-amd64-static
   - curl -L -o /tmp/trivy_0.1.6_Linux-64bit.deb https://github.com/aquasecurity/trivy/releases/download/v0.1.6/trivy_0.1.6_Linux-64bit.deb
   - sudo dpkg -i /tmp/trivy_0.1.6_Linux-64bit.deb
