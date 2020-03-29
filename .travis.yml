@@ -8,7 +8,7 @@ env:
 
 before_script:
   - sudo apt update && sudo apt install curl rpm -y
-#  - curl -L -o /tmp/vcn https://github.com/vchain-us/vcn/releases/download/v0.8.3/vcn-v0.8.3-linux-amd64-static
+  - curl -L -o /tmp/vcn https://github.com/vchain-us/vcn/releases/download/v0.8.3/vcn-v0.8.3-linux-amd64-static
   - curl -L -o /tmp/trivy_0.1.6_Linux-64bit.deb https://github.com/aquasecurity/trivy/releases/download/v0.1.6/trivy_0.1.6_Linux-64bit.deb
   - sudo dpkg -i /tmp/trivy_0.1.6_Linux-64bit.deb
 #  - curl -L -o /tmp/snyk https://github.com/snyk/snyk/releases/download/v1.305.0/snyk-linux
@@ -21,7 +21,8 @@ before_script:
 
 script:
   - docker build --pull --cache-from "$DOCKER_IMAGE" --tag "$DOCKER_IMAGE" .
-  - trivy $DOCKER_IMAGE
+  - trivy --exit-code 0 --severity HIGH --quiet $DOCKER_IMAGE
+  - trivy --exit-code 1 --severity CRITICAL --quiet $DOCKER_IMAGE
   - VCN_NOTARIZATION_PASSWORD=$codenotary_pass /tmp/vcn n -p --attr TravisCI=${TRAVIS_BUILD_NUMBER} --silent docker://$DOCKER_IMAGE
 
 after_script:
