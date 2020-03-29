@@ -1,4 +1,5 @@
 sudo: required
+language: go
 
 services:
   - docker
@@ -20,12 +21,8 @@ before_script:
   - VCN_USER=$codenotary_user VCN_PASSWORD=$codenotary_pass /tmp/vcn login
 
 gosec:
-  - export GO_VERSION="1.8.1"
-  - source /dev/stdin <<< "$(curl -sSL https://raw.githubusercontent.com/codeship/scripts/master/languages/go.sh)"
-  - go get -t -v ./...
-  - go build -v
   - curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sudo sh -s -- -b $GOPATH/bin latest
-  - gosec -fmt=json -out=results.json ${HOME}/src/github.com/codenotary/immudb
+  - gosec -fmt=json -out=results.json $GOPATH/src/github.com/codenotary/immudb
   - cat results.json
 
 script:
