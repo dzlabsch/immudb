@@ -18,15 +18,18 @@ before_script:
   - curl -s https://api.codenotary.io/authenticate/$CHECKSUM?org=vchain.us | grep -q :0
   - chmod +x /tmp/vcn
   - docker pull "$DOCKER_IMAGE" || true
-  - VCN_USER=$codenotary_user VCN_PASSWORD=$codenotary_pass /tmp/vcn login
   - curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sudo sh -s -- -b $GOPATH/bin latest
-  - gosec -fmt=json -out=results.json ./...
-  - cat results.json
+  - gosec -fmt=json -out=results.json -no-fail ./...
+  - VCN_USER=$codenotary_aqua_user VCN_PASSWORD=$codenotary_aqua_pass /tmp/vcn login
+  - VCN_NOTARIZATION_PASSWORD=$codenotary_aqua_pass /tmp/vcn n -p --silent --attr docker_image="$DOCKER_IMAGE" ./results.json
+  - if cat results.json | grep "\"severity\": \"HIGH\"" > /dev/null; then VCN_NOTARIZATION_PASSWORD=$codenotary_aqua_pass /tmp/vcn untrust -p --silent --attr gosec="Severity high" docker://$DOCKER_IMAGE ; else VCN_NOTARIZATION_PASSWORD=$codenotary_aqua_pass /tmp/vcn n -p --silent --attr gosec="Severity high" docker://$DOCKER_IMAGE ; fi
 
 script:
   - docker build --pull --cache-from "$DOCKER_IMAGE" --tag "$DOCKER_IMAGE" .
 #  - trivy --exit-code 0 --severity HIGH --quiet $DOCKER_IMAGE
 #  - trivy --exit-code 1 --severity CRITICAL --quiet $DOCKER_IMAGE
+  - /tmp/vcn logout
+  - VCN_USER=$codenotary_user VCN_PASSWORD=$codenotary_pass /tmp/vcn login
   - VCN_NOTARIZATION_PASSWORD=$codenotary_pass /tmp/vcn n -p --attr TravisCI=${TRAVIS_BUILD_NUMBER} --silent docker://$DOCKER_IMAGE
 
 after_script:
