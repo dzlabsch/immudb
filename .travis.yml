@@ -27,8 +27,8 @@ gosec:
 
 script:
   - docker build --pull --cache-from "$DOCKER_IMAGE" --tag "$DOCKER_IMAGE" .
-  - trivy --exit-code 0 --severity HIGH --quiet $DOCKER_IMAGE
-  - trivy --exit-code 1 --severity CRITICAL --quiet $DOCKER_IMAGE
+#  - trivy --exit-code 0 --severity HIGH --quiet $DOCKER_IMAGE
+#  - trivy --exit-code 1 --severity CRITICAL --quiet $DOCKER_IMAGE
   - VCN_NOTARIZATION_PASSWORD=$codenotary_pass /tmp/vcn n -p --attr TravisCI=${TRAVIS_BUILD_NUMBER} --silent docker://$DOCKER_IMAGE
 
 after_script:
