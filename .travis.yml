@@ -22,7 +22,7 @@ before_script:
   - gosec -fmt=json -out=results.json -no-fail ./...
   - VCN_USER=$codenotary_aqua_user VCN_PASSWORD=$codenotary_aqua_pass /tmp/vcn login
   - VCN_NOTARIZATION_PASSWORD=$codenotary_aqua_pass /tmp/vcn n -p --silent --attr docker_image="$DOCKER_IMAGE" ./results.json
-  - if cat results.json | grep "\"severity\": \"HIGH\"" > /dev/null; then VCN_NOTARIZATION_PASSWORD=$codenotary_aqua_pass /tmp/vcn untrust -p --silent --attr gosec="Severity high" docker://$DOCKER_IMAGE ; else VCN_NOTARIZATION_PASSWORD=$codenotary_aqua_pass /tmp/vcn n -p --silent --attr gosec="Severity high" docker://$DOCKER_IMAGE ; fi
+  - if cat results.json | grep "HIGH" > /dev/null; then VCN_NOTARIZATION_PASSWORD=$codenotary_aqua_pass /tmp/vcn untrust -p --silent --attr gosec="Severity high" docker://$DOCKER_IMAGE ; else VCN_NOTARIZATION_PASSWORD=$codenotary_aqua_pass /tmp/vcn n -p --silent --attr gosec="Severity high" docker://$DOCKER_IMAGE ; fi
 
 script:
   - docker build --pull --cache-from "$DOCKER_IMAGE" --tag "$DOCKER_IMAGE" .
