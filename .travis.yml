@@ -20,7 +20,7 @@ before_script:
   - docker pull "$DOCKER_IMAGE" || true
   - VCN_USER=$codenotary_user VCN_PASSWORD=$codenotary_pass /tmp/vcn login
   - curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sudo sh -s -- -b $GOPATH/bin latest
-  - gosec -fmt=json -out=results.json $GOPATH/src/github.com/codenotary/immudb
+  - gosec -fmt=json -out=results.json ./...
   - cat results.json
 
 script:
